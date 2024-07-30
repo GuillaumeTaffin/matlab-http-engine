@@ -6,7 +6,11 @@ repositories {
     mavenCentral()
 }
 
+def matlabroot = providers.gradleProperty("matlabroot").get()
+
 dependencies {
+    implementation 'com.google.code.gson:gson:2.11.0'
+    compileOnly files("$matlabroot/extern/engines/java/jar/engine.jar")
     testImplementation libs.junit.jupiter
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -19,4 +23,13 @@ java {
 
 tasks.named('test', Test) {
     useJUnitPlatform()
+}
+
+tasks.register("startMatlab", Exec) {
+    commandLine(
+      "$matlabroot/bin/matlab",
+      "-sd",
+      projectDir.path,
+      "-desktop"
+    )
 }
